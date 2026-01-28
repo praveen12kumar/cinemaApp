@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "A cinema booking platform similar to PVR Cinemas",
   "main": "index.js",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
-    "dev": "nodemon index.js",
-    "start": "node index.js"
+    "dev": "nodemon src/index.js",
+    "start": "node src/index.js"
   },
   "author": "Praveen Kumar",
   "license": "ISC",

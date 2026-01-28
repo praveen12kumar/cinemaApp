@@ -1,7 +1,7 @@
-import path from "path";
-import fs from "fs";
-import sqlite from "sqlite3";
-import { open } from "sqlite";
+const path = require("path");
+const fs = require("fs");
+const { open } = require("sqlite");
+const sqlite3 = require("sqlite3");
 
 const dbPath = path.join(__dirname, "../../database/app.db");
 const schemaPath = path.join(__dirname, "schema.sql");
@@ -14,7 +14,7 @@ const connectDB = async () => {
   }
   db = await open({
     filename: dbPath,
-    driver: sqlite.Database,
+    driver: sqlite3.Database,
   });
   if (fs.existsSync(schemaPath)) {
     const sql = fs.readFileSync(schemaPath, "utf-8");
@@ -22,4 +22,5 @@ const connectDB = async () => {
   }
   return db;
 };
-export default connectDB;
+
+module.exports = connectDB;
