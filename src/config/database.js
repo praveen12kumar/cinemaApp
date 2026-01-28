@@ -16,6 +16,7 @@ const connectDB = async () => {
     filename: dbPath,
     driver: sqlite3.Database,
   });
+
   if (fs.existsSync(schemaPath)) {
     const sql = fs.readFileSync(schemaPath, "utf-8");
     await db.exec(sql);
@@ -23,4 +24,11 @@ const connectDB = async () => {
   return db;
 };
 
-module.exports = connectDB;
+const getDB = async () => {
+  if (!db) {
+    db = await connectDB();
+  }
+  return db;
+};
+
+module.exports = getDB;
