@@ -1,12 +1,16 @@
 const express = require("express");
 require("dotenv").config();
 const getDB = require("./config/database");
+const bodyParser = require("body-parser");
 
 const movieRoutes = require("./routes/movieRoutes");
 
 const app = express();
 app.use(express.json());
-app.use("/movies", movieRoutes);
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// routes
+app.use("/api", movieRoutes);
 
 const PORT = process.env.PORT || 5000;
 

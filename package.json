@@ -11,6 +11,7 @@
   "author": "Praveen Kumar",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^2.2.2",
     "brcypt": "^1.0.1",
     "cors": "^2.8.6",
     "dotenv": "^17.2.3",
