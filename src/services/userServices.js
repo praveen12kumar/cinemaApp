@@ -2,11 +2,7 @@ const userRepo = require("../repositories/userRepository");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-exports.getAllUsers = async () => {
-  return await userRepo.getAllUsers();
-};
-
-exports.signup = async (data) => {
+exports.signupService = async (data) => {
   // check for user is already exists
   const user = await userRepo.getUserByEmail(data.email);
   if (user) {
@@ -28,7 +24,7 @@ exports.signup = async (data) => {
   return newUser;
 };
 
-exports.login = async (data) => {
+exports.loginService = async (data) => {
   // check for user is already exists
   const user = await userRepo.getUserByEmail(data.email);
   if (!user) {
@@ -46,5 +42,21 @@ exports.login = async (data) => {
     { id: user.id, email: user.email },
     process.env.JWT_SECRET,
   );
-  return token;
+  return { token, user };
+};
+
+exports.getAllUsersService = async () => {
+  const users = await userRepo.getAllUsers();
+  if (!users) {
+    throw new Error("No users found");
+  }
+  return users;
+};
+
+exports.getUserByIdService = async (id) => {
+  const user = await userRepo.getUserById(id);
+  if (!user) {
+    throw new Error("User not found");
+  }
+  return user;
 };
