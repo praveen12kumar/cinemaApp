@@ -1,9 +1,29 @@
 const getDB = require("../config/database");
 
-exports.findAll = async () => {
+exports.findAll = async (filters) => {
   const db = await getDB();
-  const movies = await db.all("SELECT * FROM movies");
-  return movies;
+  let query = `
+    SELECT *
+    FROM movies
+    WHERE releaseDate <= date('now')
+  `;
+  const params = [];
+  if (filters.language) {
+    query += `AND language LIKE ?`;
+    params.push(`%${filters.language}%`);
+  }
+
+  if (filters.genre) {
+    query += `AND genre LIKE ?`;
+    params.push(`%${filters.genre}%`);
+  }
+
+  if (filters.format) {
+    query += `AND format LIKE ?`;
+    params.push(`%${filters.format}%`);
+  }
+
+  return await db.all(query, params);
 };
 
 exports.create = async (movie) => {
@@ -11,11 +31,11 @@ exports.create = async (movie) => {
   const {
     title,
     description,
-    duration_minutes,
+    durationMinutes,
     genre,
     language,
     format,
-    release_date,
+    releaseDate,
     rating,
     cast,
     posterUrl,
@@ -23,20 +43,45 @@ exports.create = async (movie) => {
   } = movie;
 
   const query = `
-        INSERT INTO movies (title, description, duration_minutes, genre, language, format, release_date, rating, cast, posterUrl, trailerUrl)
+        INSERT INTO movies (title, description, durationMinutes, genre, language, format, releaseDate, rating, cast, posterUrl, trailerUrl)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
   return await db.run(query, [
     title,
     description,
-    duration_minutes,
+    durationMinutes,
     genre,
     language,
     format,
-    release_date,
+    releaseDate,
     rating,
     cast,
     posterUrl,
     trailerUrl,
   ]);
+};
+
+exports.getAMovieRepo = async (id) => {
+  const db = await getDB();
+  const query = `
+    select * 
+    from movies
+    where id = ?
+  `;
+  const movie = await db.get(query, [id]);
+  return movie;
+};
+
+// upcoming movies
+exports.getUpcomingMovieRepo = async () => {
+  const db = await getDB();
+
+  const query = `
+    SELECT *
+    FROM movies
+    WHERE releaseDate > date('now')
+    ORDER BY releaseDate ASC
+  `;
+
+  return await db.all(query);
 };

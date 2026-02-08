@@ -49,14 +49,17 @@ CREATE TABLE IF NOT EXISTS movies (
   title TEXT NOT NULL,
   description TEXT,
   durationMinutes INTEGER NOT NULL CHECK (durationMinutes > 0),
-  genre TEXT,
-  language TEXT,
-  format TEXT CHECK (format IN ('2D', '3D')),
-  releaseDate TEXT, -- YYYY-MM-DD
-  rating TEXT CHECK (rating IN ('U', 'UA', 'A')),
+  genre TEXT NOT NULL,
+  language TEXT NOT NULL,
+  format TEXT NOT NULL,
+  releaseDate TEXT NOT NULL,          -- YYYY-MM-DD
+  rating REAL CHECK (rating >= 0 AND rating <= 10),
+  cast TEXT NOT NULL,                 -- JSON string
   posterUrl TEXT,
-  trailerUrl TEXT
+  trailerUrl TEXT,
+  createdAt TEXT DEFAULT (datetime('now'))
 );
+
 
 -- ACTORS
 CREATE TABLE IF NOT EXISTS actors (
