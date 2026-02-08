@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // routes
 app.use("/api", movieRoutes);
-app.use("/api", userRoutes);
+app.use("/api/auth", userRoutes);
 app.use("/api", cityRoutes);
 
 const PORT = process.env.PORT || 5000;
