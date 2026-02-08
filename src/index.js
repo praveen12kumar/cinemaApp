@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 
 const movieRoutes = require("./routes/movieRoutes");
 const userRoutes = require("./routes/userRoutes");
+const cityRoutes = require("./routes/cityRoutes");
 
 const app = express();
 app.use(express.json());
@@ -13,6 +14,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // routes
 app.use("/api", movieRoutes);
 app.use("/api", userRoutes);
+app.use("/api", cityRoutes);
 
 const PORT = process.env.PORT || 5000;
 
