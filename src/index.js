@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 const movieRoutes = require("./routes/movieRoutes");
 const userRoutes = require("./routes/userRoutes");
 const cityRoutes = require("./routes/cityRoutes");
+const theaterRoutes = require("./routes/theaterRoutes");
 
 const app = express();
 app.use(express.json());
@@ -15,6 +16,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/api", movieRoutes);
 app.use("/api/auth", userRoutes);
 app.use("/api", cityRoutes);
+app.use("/api", theaterRoutes);
 
 const PORT = process.env.PORT || 5000;
 

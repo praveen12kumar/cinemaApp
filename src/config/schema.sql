@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS seats (
   seatNumber INTEGER NOT NULL,
   seatCategory TEXT CHECK (seatCategory IN ('REGULAR', 'PREMIUM', 'RECLINER')),
   FOREIGN KEY (screenId) REFERENCES screens(id),
-  UNIQUE (screenId, seatRow, seatNumber)
+  UNIQUE (screenId, seatNumber)
 );
 
 -- SHOW SEAT PRICING
