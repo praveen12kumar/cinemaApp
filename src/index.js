@@ -8,6 +8,7 @@ const userRoutes = require("./routes/userRoutes");
 const cityRoutes = require("./routes/cityRoutes");
 const theaterRoutes = require("./routes/theaterRoutes");
 const screenRoutes = require("./routes/screenRoutes");
+const showRoutes = require("./routes/showRoutes");
 
 const app = express();
 app.use(express.json());
@@ -19,6 +20,7 @@ app.use("/api/auth", userRoutes);
 app.use("/api", cityRoutes);
 app.use("/api", theaterRoutes);
 app.use("/api", screenRoutes);
+app.use("/api", showRoutes);
 
 const PORT = process.env.PORT || 5000;
 
