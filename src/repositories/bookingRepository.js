@@ -87,5 +87,3 @@ exports.insertBookedSeats = async (bookingId, showId, seatIds) => {
     await db.run(stmt, [bookingId, showId, seatId]);
   }
 };
-
-module.exports = BookingRepository;
