@@ -55,3 +55,24 @@ exports.getShowController = async (req, res) => {
     });
   }
 };
+
+exports.getShowSeatsController = async (req, res) => {
+  const { showId } = req.params;
+
+  try {
+    const show = await showService.getShowSeatsService(showId);
+    res.status(200).json({
+      success: true,
+      error: {},
+      data: show,
+      message: "Successfully fetched show",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      data: {},
+      message: "Something went wrong",
+    });
+  }
+};

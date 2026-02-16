@@ -56,3 +56,96 @@ exports.getShows = async ({ movieId, cityId, showDate }) => {
 
   return await db.all(query, [movieId, cityId, showDate]);
 };
+
+exports.getShowDetails = async (showId) => {
+  const db = await getDB();
+  return await db.get(
+    `
+      SELECT 
+        sh.id AS showId,
+        sc.id AS screenId,
+        sc.name AS screenName
+      FROM shows sh
+      JOIN screens sc ON sc.id = sh.screenId
+      WHERE sh.id = ?
+      `,
+    [showId],
+  );
+};
+
+exports.getShowAndScreen = async (showId) => {
+  console.log(showId);
+  const db = await getDB();
+  return await db.get(
+    `
+      SELECT 
+        sh.id AS showId,
+        sc.id AS screenId,
+        sc.name AS screenName
+      FROM shows sh
+      JOIN screens sc ON sc.id = sh.screenId
+      WHERE sh.id = ?
+      `,
+    [showId],
+  );
+};
+
+exports.getSeatsByScreen = async (screenId) => {
+  const db = await getDB();
+  const seats = await db.all(
+    `
+      SELECT 
+        seatRow,
+        seatNumber,
+        seatCategory
+      FROM seats
+      WHERE screenId = ?
+      ORDER BY seatCategory, seatRow, seatNumber
+      `,
+    [1],
+  );
+  return seats;
+};
+
+exports.getSeatPricesByShow = async (showId) => {
+  const db = await getDB();
+  return await db.all(
+    `
+      SELECT 
+        seatCategory,
+        price
+      FROM showSeatPricing
+      WHERE showId = ?
+      `,
+    [showId],
+  );
+};
+
+exports.getBookedSeats = async (showId) => {
+  const db = await getDB();
+  return await db.all(
+    `
+      SELECT 
+        s.seatRow || s.seatNumber AS seat
+      FROM bookedSeats bs
+      JOIN seats s ON s.id = bs.seatId
+      WHERE bs.showId = ?
+      `,
+    [showId],
+  );
+};
+
+exports.getBlockedSeats = async (showId) => {
+  const db = await getDB();
+  return await db.all(
+    `
+      SELECT 
+        s.seatRow || s.seatNumber AS seat
+      FROM seatLocks sl
+      JOIN seats s ON s.id = sl.seatId
+      WHERE sl.showId = ?
+        AND sl.expiresAt > datetime('now')
+      `,
+    [showId],
+  );
+};
