@@ -10,4 +10,18 @@ router.post(
   bookingController.createBookingController,
 );
 
+router.get(
+  "/bookings",
+  authenticate,
+  bookingController.getAllBookingsController,
+);
+
+router.get("/bookings/:id", authenticate, bookingController.getBookingById);
+
+router.post(
+  "/bookings/:bookingId/cancel",
+  authenticate,
+  bookingController.cancelBookingController,
+);
+
 module.exports = router;

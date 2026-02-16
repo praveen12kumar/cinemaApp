@@ -7,7 +7,7 @@ exports.createBookingService = async (userId, payload) => {
 
   // 1. Validate show
   const show = await bookingsRepo.getShowDetails(showId);
-  console.log(show);
+
   if (!show) {
     const error = new Error("Show not found");
     error.statusCode = 404;
@@ -81,3 +81,107 @@ exports.createBookingService = async (userId, payload) => {
 function generateBookingReference() {
   return "PVR" + Math.floor(100000 + Math.random() * 900000);
 }
+
+exports.getAllBookingsService = async (userId) => {
+  const rows = await bookingsRepo.getUserBookings(userId);
+
+  if (rows.length === 0) {
+    return [];
+  }
+
+  const bookingsMap = {};
+
+  for (const row of rows) {
+    if (!bookingsMap[row.bookingReference]) {
+      bookingsMap[row.bookingReference] = {
+        bookingId: row.bookingReference,
+        status: row.status,
+        totalAmount: row.totalAmount,
+        createdAt: row.createdAt,
+        showDetails: {
+          movie: row.movieTitle,
+          theater: row.theaterName,
+          screen: row.screenName,
+          date: row.showDate,
+          showTime: row.showTime,
+          seats: [],
+        },
+      };
+    }
+
+    if (row.seatLabel) {
+      bookingsMap[row.bookingReference].showDetails.seats.push(row.seatLabel);
+    }
+  }
+
+  return Object.values(bookingsMap);
+};
+
+exports.getBookingByIdService = async (userId, bookingId) => {
+  const rows = await bookingsRepo.getBookingById(userId, bookingId);
+
+  if (rows.length === 0) {
+    const error = new Error("Booking not found");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  const first = rows[0];
+
+  const booking = {
+    bookingId: first.bookingReference,
+    status: first.status,
+    totalAmount: first.totalAmount,
+    createdAt: first.createdAt,
+    showDetails: {
+      movie: first.movieTitle,
+      theater: first.theaterName,
+      screen: first.screenName,
+      date: first.showDate,
+      showTime: first.showTime,
+      seats: [],
+    },
+  };
+
+  for (const row of rows) {
+    if (row.seatLabel) {
+      booking.showDetails.seats.push(row.seatLabel);
+    }
+  }
+
+  return booking;
+};
+
+exports.cancelBookingService = async (userId, bookingReference) => {
+  const db = await getDB();
+
+  const booking = await bookingsRepo.getBookingForCancel(
+    userId,
+    bookingReference,
+  );
+
+  if (!booking) {
+    const error = new Error("Booking not found");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  if (booking.status !== "CONFIRMED") {
+    const error = new Error("Booking cannot be cancelled");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  // transaction for safety
+  await db.exec("BEGIN IMMEDIATE");
+
+  try {
+    await bookingsRepo.cancelBooking(booking.id);
+    await db.exec("COMMIT");
+  } catch (err) {
+    await db.exec("ROLLBACK");
+    throw err;
+  }
+
+  return { bookingId: bookingReference };
+};
