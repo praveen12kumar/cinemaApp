@@ -32,7 +32,7 @@ const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
   try {
-    const connect = await getDB();
+    await getDB();
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
     });
@@ -41,5 +41,9 @@ const startServer = async () => {
     process.exit(1);
   }
 };
+
+app.get("/", (req, res) => {
+  res.send("Cinema Booking App");
+});
 
 startServer();
