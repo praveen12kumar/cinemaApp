@@ -11,6 +11,7 @@ const screenRoutes = require("./routes/screenRoutes");
 const showRoutes = require("./routes/showRoutes");
 const bookingRoutes = require("./routes/bookingRoutes");
 const foodRoutes = require("./routes/foodRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
 
 const app = express();
 app.use(express.json());
@@ -25,6 +26,7 @@ app.use("/api", screenRoutes);
 app.use("/api", showRoutes);
 app.use("/api", bookingRoutes);
 app.use("/api", foodRoutes);
+app.use("/api", paymentRoutes);
 
 const PORT = process.env.PORT || 5000;
 
